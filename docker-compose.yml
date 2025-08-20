@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: notesapp_api
+    environment:
+      DATABASE_URL: sqlite:///./notesapp.db
+      SECRET_KEY: your-secret-key-change-in-production
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - sqlite_data:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  sqlite_data:

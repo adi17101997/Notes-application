@@ -1,144 +1,172 @@
-# 📒 NotesApp - Next.js + Flask + MongoDB
+# NotesApp Backend
 
-A modern **note-taking application** with a clean UI for login, dashboard, creating notes, and managing stored notes.
-Built with **Next.js (frontend)**, **Flask (backend)**, and **MongoDB (database)**.
+A FastAPI-based backend for the NotesApp, featuring user authentication, note management, and SQLite database.
 
-## 🚀 Features
+## Features
 
-* **User Authentication**: Secure login & signup with JWT tokens
-* **Dashboard**: Central place to view all stored notes
-* **Note Management**: Create, update, and delete notes with an intuitive UI
-* **Real-time Updates**: Zustand state management for instant UI refresh
-* **Responsive UI**: Login page, dashboard, note editor, and stored notes screen (as per PDF design)
-* **Modern Tech Stack**: Next.js 14, Flask 3, MongoDB 7
+- 🔐 JWT-based authentication
+- 📝 Full CRUD operations for notes
+- 🗄️ SQLite database (no external setup required)
+- 📚 Auto-generated API documentation
+- 🚀 Fast and lightweight
 
-## 🖥️ UI Overview (from PDF)
+## Quick Start
 
-* **Login Page** → Simple authentication screen for users
-* **Dashboard** → Overview of all user notes
-* **Making Notes** → Clean editor to create new notes
-* **Stored Notes and Data** → List and manage saved notes
-
-## 🏗️ Architecture
-
-* **Frontend**: Next.js 14 + TypeScript + Tailwind CSS
-* **Backend**: Flask 3 with JWT authentication
-* **Database**: MongoDB with optimized indexes
-* **State Management**: Zustand
-* **Styling**: Tailwind CSS with custom components
-
-## 📁 Project Structure
-
-```
-├── src/
-│   ├── app/
-│   │   ├── dashboard/        # Dashboard UI
-│   │   ├── signin/           # Login page
-│   │   ├── signup/           # Signup page
-│   │   ├── notes/            # Making Notes editor
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/           # UI components
-│   │   ├── layout/
-│   │   └── notes/
-│   ├── store/                # Zustand stores
-│   ├── services/             # API services
-│   └── types/                # TypeScript types
-├── backend/
-│   ├── app.py
-│   ├── database/
-│   ├── models/
-│   └── requirements.txt
-├── docker-compose.yml
-└── package.json
-```
-
-## ⚡ Quick Start
-
-### Option 1: Docker Setup
+### Option 1: Automatic Setup (Recommended)
 
 ```bash
-git clone <your-repo-url>
-cd notes-app
-docker-compose up -d
-npm install
-npm run dev
-```
+# Run the setup script
+python setup.py
 
-Visit 👉 [http://localhost:3000](http://localhost:3000)
+# Start the application
+python run.py
+```
 
 ### Option 2: Manual Setup
 
-* Run MongoDB locally or via Atlas
-* Start Flask backend (`python app.py`)
-* Run Next.js frontend (`npm run dev`)
+1. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## 🔧 Configuration
+2. **Create Environment File**
+   ```bash
+   cp env.example .env
+   # Edit .env if needed
+   ```
 
-* **Frontend** → `.env.local`
+3. **Start the Application**
+   ```bash
+   python run.py
+   ```
+
+## API Endpoints
+
+### Authentication
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/login` - User login
+- `GET /api/v1/auth/me` - Get current user info
+
+### Notes
+- `GET /api/v1/notes` - Get user notes (with pagination)
+- `POST /api/v1/notes` - Create new note
+- `GET /api/v1/notes/{id}` - Get specific note
+- `PUT /api/v1/notes/{id}` - Update note
+- `DELETE /api/v1/notes/{id}` - Delete note
+- `GET /api/v1/notes/stats/count` - Get notes count
+
+## Database
+
+The app uses SQLite by default, which creates a `notesapp.db` file in the backend directory. No external database setup is required.
+
+### Database Schema
+
+**Users Table:**
+- `user_id` (UUID, Primary Key)
+- `user_name` (VARCHAR 100)
+- `user_email` (VARCHAR 255, Unique)
+- `password` (VARCHAR 255, Hashed)
+- `created_on` (DateTime)
+- `last_update` (DateTime)
+
+**Notes Table:**
+- `note_id` (UUID, Primary Key)
+- `note_title` (VARCHAR 255)
+- `note_content` (TEXT)
+- `user_id` (UUID, Foreign Key)
+- `created_on` (DateTime)
+- `last_update` (DateTime)
+
+## Environment Variables
+
+Create a `.env` file in the backend directory:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+DATABASE_URL=sqlite:///./notesapp.db
+SECRET_KEY=your-secret-key-change-in-production
+FRONTEND_URL=http://localhost:5173
 ```
 
-* **Backend** → `.env`
+## Docker Support
 
-```env
-MONGO_URI=mongodb://localhost:27017/
-DATABASE_NAME=notes_app
-JWT_SECRET_KEY=your-secret-key
-FLASK_ENV=development
-FLASK_DEBUG=True
-```
-
-## 📱 API Endpoints
-
-* **Auth**: `/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/me`
-* **Notes**: `/api/v1/notes`, `/api/v1/notes/{id}`
-
-## 🧪 Development
-
-Frontend:
+When Docker is available, you can run:
 
 ```bash
-npm run dev
-npm run build
-npm run lint
+docker-compose up --build
 ```
 
-Backend:
+## Development
 
+### Running with Auto-reload
 ```bash
-cd backend
-python app.py
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-MongoDB:
+### API Documentation
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
-```bash
-mongosh
-use notes_app
-show collections
+### Health Check
+- Health endpoint: http://localhost:8000/health
+
+## Project Structure
+
+```
+backend/
+├── app/
+│   ├── api/
+│   │   ├── routes/
+│   │   │   ├── auth.py
+│   │   │   └── notes.py
+│   │   └── dependencies.py
+│   ├── core/
+│   │   ├── config.py
+│   │   └── security.py
+│   ├── database/
+│   │   └── connection.py
+│   ├── models/
+│   │   ├── user.py
+│   │   └── note.py
+│   ├── schemas/
+│   │   ├── user.py
+│   │   └── note.py
+│   ├── services/
+│   │   ├── user_service.py
+│   │   └── note_service.py
+│   └── main.py
+├── requirements.txt
+├── run.py
+├── setup.py
+└── docker-compose.yml
 ```
 
-## 🔒 Security
+## Troubleshooting
 
-* JWT-based authentication
-* Bcrypt password hashing
-* CORS configured for frontend-backend
-* Input validation and user-level note isolation
+### Common Issues
 
-## 🚀 Deployment
+1. **Port Already in Use**
+   - Change the port in `run.py` or use a different port
+   - Kill the process using the port: `lsof -ti:8000 | xargs kill -9`
 
-* **Frontend** → Vercel/Netlify
-* **Backend** → Heroku/DigitalOcean
-* **Database** → MongoDB Atlas
+2. **Database Issues**
+   - Delete `notesapp.db` file and restart (will recreate tables)
+   - Check file permissions in the backend directory
 
-## 📝 License
+3. **Import Errors**
+   - Ensure you're in the backend directory
+   - Check that all dependencies are installed
 
-MIT License
+### Logs
 
----
+The application logs to the console. For production, consider using a proper logging configuration.
 
-✨ With this setup, you get the same UI flow as shown in your **Frontend UI PDF** (Login → Dashboard → Making Notes → Stored Notes).
+## Security Notes
+
+- Change the `SECRET_KEY` in production
+- Use HTTPS in production
+- Consider rate limiting for production use
+- The current setup is for development purposes
+
+## License
+
+This project is part of a full-stack development assignment.

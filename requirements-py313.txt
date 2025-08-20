@@ -1,0 +1,28 @@
+# Python 3.13 Compatible Requirements
+# These versions are tested to work with Python 3.13
+
+# Core FastAPI and server
+fastapi>=0.100.0,<0.105.0
+uvicorn[standard]>=0.23.0,<0.25.0
+
+# Database and ORM
+sqlalchemy>=2.0.0,<3.0.0
+alembic>=1.11.0,<1.13.0
+
+# Authentication and security
+python-jose[cryptography]>=3.3.0,<4.0.0
+passlib[bcrypt]>=1.7.4,<2.0.0
+python-multipart>=0.0.6,<1.0.0
+
+# Data validation - Python 3.13 compatible versions
+pydantic>=2.0.0,<2.6.0
+pydantic-extra-types>=2.0.0,<2.2.0
+
+# Environment and utilities
+python-dotenv>=1.0.0,<2.0.0
+
+# Alternative minimal setup if still having issues
+# fastapi>=0.95.0
+# uvicorn>=0.20.0
+# sqlalchemy>=1.4.0
+# pydantic>=1.10.0

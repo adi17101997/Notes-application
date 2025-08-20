@@ -1,0 +1,21 @@
+# Ultra-Basic Requirements - Maximum Compatibility
+# These versions should work on any Python version including 3.13
+
+# Core web framework
+fastapi==0.95.2
+uvicorn==0.22.0
+
+# Database
+sqlalchemy==1.4.41
+alembic==1.10.4
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Data validation - old but stable
+pydantic==1.10.8
+
+# Environment
+python-dotenv==1.0.0
